@@ -1,8 +1,9 @@
 const knex = require('knex')
+const supertest = require('supertest')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Comments Endpoints', function() {
+describe('Comments Endpoints', function () {
   let db
 
   const {
@@ -33,7 +34,17 @@ describe('Comments Endpoints', function() {
       )
     )
 
-    it(`creates an comment, responding with 201 and the new comment`, function() {
+    it(`responds 401 'Unauthorized request' when invalid password`, () => {
+      const userInvalidPass = { user_name: testUsers[0].user_name, password: 'wrong' }
+      return supertest(app)
+        .post('/api/comments')
+        .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
+        .expect(401, {
+          error: `Unauthorized request`
+        })
+    })
+
+    it(`creates an comment, responding with 201 and the new comment`, function () {
       this.retries(3)
       const testArticle = testArticles[0]
       const testUser = testUsers[0]
@@ -44,6 +55,7 @@ describe('Comments Endpoints', function() {
       }
       return supertest(app)
         .post('/api/comments')
+        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
         .send(newComment)
         .expect(201)
         .expect(res => {
@@ -89,6 +101,7 @@ describe('Comments Endpoints', function() {
 
         return supertest(app)
           .post('/api/comments')
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .send(newComment)
           .expect(400, {
             error: `Missing '${field}' in request body`,

@@ -16,12 +16,24 @@ const requireAuth = (req, res, next) => {
     .toString()
     .split(':')
 
-    if(!tokenUserName || !tokenPassword) {
-      return res.status(401).json({
-        error: 'Unauthorized request'
-      })
-    }
-  next()
+  if (!tokenUserName || !tokenPassword) {
+    return res.status(401).json({
+      error: 'Unauthorized request'
+    })
+  }
+
+  req.app.get('db')('blogful_users')
+    .where({ user_name: tokenUserName })
+    .first()
+    .then(user => {
+      if (!user || user.password !== tokenPassword) {
+        return res.status(401).json({
+          error: 'Unauthorized request'
+        })
+      }
+      next()
+    })
+    .catch(next)
 }
 
 module.exports = {
