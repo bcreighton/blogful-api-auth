@@ -31,6 +31,7 @@ articlesRouter.route('/:article_id/comments/')
       req.params.article_id
     )
       .then(comments => {
+        debugger
         res.json(comments.map(ArticlesService.serializeArticleComment))
       })
       .catch(next)
