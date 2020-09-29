@@ -4,6 +4,8 @@ const ArticlesService = require('./articles-service')
 
 const articlesRouter = express.Router()
 
+
+
 articlesRouter
   .route('/')
   .get((req, res, next) => {
@@ -19,6 +21,7 @@ articlesRouter
   .all(requireAuth)
   .all(checkArticleExists)
   .get((req, res) => {
+
     res.json(ArticlesService.serializeArticle(res.article))
   })
 
@@ -26,12 +29,13 @@ articlesRouter.route('/:article_id/comments/')
   .all(requireAuth)
   .all(checkArticleExists)
   .get((req, res, next) => {
+
     ArticlesService.getCommentsForArticle(
       req.app.get('db'),
       req.params.article_id
     )
       .then(comments => {
-        debugger
+
         res.json(comments.map(ArticlesService.serializeArticleComment))
       })
       .catch(next)

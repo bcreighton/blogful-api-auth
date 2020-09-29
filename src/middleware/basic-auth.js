@@ -7,7 +7,6 @@ const requireAuth = (req, res, next) => {
   let basicToken
 
   if (!authToken.toLowerCase().startsWith('basic ')) {
-    debugger
     return res.status(401).json({
       error: 'Missing basic token'
     })
@@ -21,7 +20,6 @@ const requireAuth = (req, res, next) => {
     .split(':')
 
   if (!tokenUserName || !tokenPassword) {
-    debugger
     return res.status(401).json({
       error: 'Unauthorized request'
     })
@@ -31,7 +29,6 @@ const requireAuth = (req, res, next) => {
     .where({ user_name: tokenUserName })
     .first()
     .then(user => {
-      debugger
       if (!user || user.password !== tokenPassword) {
         return res.status(401).json({
           error: 'Unauthorized request'
