@@ -1,5 +1,5 @@
 const express = require('express')
-const { requireAuth } = require('../middleware/basic-auth')
+const { requireAuth } = require('../middleware/jwt-auth')
 const ArticlesService = require('./articles-service')
 
 const articlesRouter = express.Router()
